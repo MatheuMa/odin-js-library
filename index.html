@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odin Library</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="book-shelf"></div>
+    <button id="new-book" command="show-modal" commandfor="create-book">New Book</button>
+    <dialog class="create-book" id="create-book">
+        <form id="book-form" action="#" method="post">
+            <ul class="input-attr">
+                <li>
+                    <label for="title">Book Title:</label>
+                    <input id="title" type="text" name="title" required>
+                </li>
+                <li>
+                    <label for="author">Book Author:</label>
+                    <input id="author" type="text" name="author" required>
+                </li>
+                <li>
+                    <label for="pages">Book Pages:</label>
+                    <input id="pages" type="number" name="pages" required>
+                </li>
+                <ul>
+                    <li>
+                        <input id="read-y" type="radio" name="read" value="yes">
+                        <label for="read">Yes I have read the book</label>
+                    </li>
+                    <li>
+                        <input id="read-n" type="radio" name="read" value="no">
+                        <label for="read-n">No I have not read the book</label>
+                    </li>
+                </ul>
+            </ul>
+            <button class="common-btn" type="submit" commandfor="create-book" command="close">Create Book</button>
+        </form>
+        <button class="common-btn" commandfor="create-book" command="close">Close</button>
+    </dialog>
+</body>
+</html>
