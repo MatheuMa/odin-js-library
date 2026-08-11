@@ -15,6 +15,10 @@ function Book(title, author, pages, read) {
     this.read = read;
 }
 
+Book.prototype.toggleRead = function() {
+    this.read = !this.read;
+}
+
 // Create and add a book to myLibrary
 function addBookToLibrary(title, author, pages, read) {
   const book = new Book(title, author, pages, read);
@@ -42,10 +46,35 @@ function displayBooks() {
                 return;
             };
 
+            if (attr === 'read') {
+                const readRow = document.createElement("div");
+                readRow.classList.add("attr-item");
+                readRow.classList.add("read-row");
+                
+                const readText = document.createElement("p")
+                readText.textContent = book.read ? "Read" : "Not yet";
+                
+                const readButton = document.createElement("button");
+                readButton.textContent = "Toggle"
+                readButton.classList.add("read-btn");
+
+                readRow.appendChild(readText);
+                readRow.appendChild(readButton);
+                bookCard.appendChild(readRow);
+                return;
+            }
+
+            const attrItem = document.createElement("div");
+            attrItem.classList.add("attr-item");
+
+            const attrName = document.createElement("p");
+            attrName.textContent = capitalizeFirstLetter(attr) + ":";
             const info = document.createElement("p");
-            let capitalizedAttr = capitalizeFirstLetter(attr);
-            info.textContent = `${capitalizedAttr}: ${book[attr]}`;
-            bookCard.appendChild(info);
+            info.textContent = book[attr];
+
+            attrItem.appendChild(attrName);
+            attrItem.appendChild(info);
+            bookCard.appendChild(attrItem);
         });
         
         const removeButton = document.createElement("button");
@@ -76,13 +105,20 @@ bookForm.addEventListener("submit", (e) => {
 })
 
 bookShelf.addEventListener("click", (e) => {
-    if (!e.target.matches(".remove-btn")) return;
-
-    const bookCard = e.target.parentElement;
-    const bookId = bookCard.dataset.bookId;
-
-    removeBook(bookId);
-    displayBooks();
+    
+    if (e.target.matches(".remove-btn")) {
+        const bookCard = e.target.closest(".book-card");
+        const bookId = bookCard.dataset.bookId;
+        removeBook(bookId);
+        displayBooks();
+    } else if (e.target.matches(".read-btn")) {
+        const bookCard = e.target.closest(".book-card");
+        const bookId = bookCard.dataset.bookId;
+        const book = myLibrary.find(book => book.id === bookId);
+        if (!book) return;
+        book.toggleRead();
+        displayBooks();
+    }
 })
 
 // Sample books for quick testing
