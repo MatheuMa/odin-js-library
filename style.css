@@ -138,6 +138,6 @@ input {
     padding: 4px;
 }
 
-input[type='radio'] {
+input[type='checkbox'] {
     width: 1rem;
 }

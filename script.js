@@ -1,5 +1,6 @@
 const bookForm = document.querySelector("#book-form");
 const bookShelf = document.querySelector(".book-shelf");
+const newBookBtn = document.querySelector("#new-book");
 
 const myLibrary = [];
 
@@ -89,16 +90,46 @@ function displayBooks() {
   });
 }
 
+newBookBtn.addEventListener("click", (e) => {
+  resetError("title-error");
+  resetError("author-error");
+  resetError("pages-error");
+});
+
 bookForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
   const formData = new FormData(bookForm);
+
+  const titleInput = document.querySelector("#title");
+  const authorInput = document.querySelector("#author");
+  const pagesInput = document.querySelector("#pages");
 
   const title = formData.get("title").trim();
   const author = formData.get("author").trim();
   const pages = Number(formData.get("pages"));
   const read = formData.get("read") === "yes";
 
+  const titleMissing = valueMissing(
+    titleInput,
+    "title-error",
+    "Please enter the book name",
+  );
+  const authorMissing = valueMissing(
+    authorInput,
+    "author-error",
+    "Please enter the author",
+  );
+  const pagesMissing = valueMissing(
+    pagesInput,
+    "pages-error",
+    "Please enter the pages",
+  );
+  const pagesValid = validPages(pagesInput);
+
+  if (titleMissing || authorMissing || pagesMissing || !pagesValid) {
+    return;
+  }
   addBookToLibrary(title, author, pages, read);
   displayBooks();
 
@@ -112,25 +143,54 @@ bookForm.addEventListener("submit", (e) => {
     if (!currentInput) return;
 
     if (currentInput.id === "title") {
-      if (currentInput.validity.valueMissing) {
-        showError("title-error", "Please enter the book title");
-      }
+      valueMissing(currentInput, "title-error", "Please enter the book name");
     } else if (currentInput.id === "author") {
-      if (currentInput.validity.valueMissing) {
-        showError("author-error", "Please enter the author of the book");
-      }
+      valueMissing(currentInput, "author-error", "Please enter the author");
     } else if (currentInput.id === "pages") {
-      if (currentInput.validity.valueMissing) {
-        showError("pages-error", "Please enter the amount of pages");
-      }
+      valueMissing(currentInput, "pages-error", "Please enter the pages");
+      validPages(currentInput);
     }
   });
 });
+
+function valueMissing(input, spanClass, message) {
+  const missing = input.value.trim() === "";
+  input.setCustomValidity(missing ? message : "");
+  if (missing) {
+    showError(spanClass, message);
+    return true;
+  } else {
+    resetError(spanClass);
+    return false;
+  }
+}
+
+function validPages(input) {
+  if (input.value === "") return;
+
+  const positive = Number(input.value.trim()) > 0;
+  const errorMessage = positive ? "" : "Pages should be a positive number";
+  input.setCustomValidity(errorMessage);
+
+  if (errorMessage !== "") {
+    showError("pages-error", errorMessage);
+    return false;
+  } else {
+    resetError("pages-error");
+    return true;
+  }
+}
 
 function showError(spanClass, message) {
   const error = document.querySelector(`.${spanClass}`);
   error.textContent = message;
   error.classList.add("active");
+}
+
+function resetError(spanClass) {
+  const error = document.querySelector(`.${spanClass}`);
+  error.textContent = "";
+  error.classList.remove("active");
 }
 
 bookShelf.addEventListener("click", (e) => {
