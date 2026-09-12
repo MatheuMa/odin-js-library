@@ -119,3 +119,25 @@ dialog::backdrop {
     height: 50px;
     width: 130px;
 }
+
+.input-div {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    width: 300px;
+}
+
+.error {
+    width: 300px;
+}
+
+.error.active {
+    color: red;
+    padding: 4px;
+}
+
+input[type='checkbox'] {
+    width: 1rem;
+}
